@@ -1,65 +1,101 @@
-import sreamlit as st
+import streamlit as st
+import random
+
+# ----------------------------
+# Guessing Game Section
+# ----------------------------
 def guessing_game_section():
-   st.title("Guessing Game")
-   game_mode = st.selectbox("Choose the game mode:", ["User Guessing", "Machine Guessing"])
-   if game_mode == "User Guessing":
-       user_guessing_game()
-   else:
-       machine_guessing_game()
+    st.title("🎯 Guessing Game")
+
+    game_mode = st.selectbox("Choose the game mode:", ["User Guessing", "Machine Guessing"])
+
+    if game_mode == "User Guessing":
+        user_guessing_game()
+    else:
+        machine_guessing_game()
+
+# ----------------------------
+# User Guessing Game
+# ----------------------------
 def user_guessing_game():
-   st.header("User Guessing Game")
-   
-   min_range = st.number_input("Enter the minimum value:", value=1)
-   max_range = st.number_input("Enter the maximum value:", value=100)
-   secret_number = random.randint(min_range, max_range)
-   
-   guess = st.number_input(f"Guess a number between {min_range} and {max_range}:", value=min_range)
-   
-   if 'attempts' not in st.session_state:
-       st.session_state.attempts = 0
-   
-   if guess == secret_number:
-       st.success(f"Congratulations! You guessed the number {secret_number} in {st.session_state.attempts} attempts.
-       st.session_state.attempts = 0
-   elif guess < secret_number:
-       st.warning("Try a higher number.")
-       st.session_state.attempts += 1
-   else:
-       st.warning("Try a lower number.")
-       st.session_state.attempts += 1
+    st.header("🧑‍💻 User Guessing Game")
+
+    min_range = st.number_input("Enter the minimum value:", value=1)
+    max_range = st.number_input("Enter the maximum value:", value=100)
+
+    # Store the secret number in session_state so it doesn't change
+    if 'secret_number' not in st.session_state or st.session_state.min_range != min_range or st.session_state.max_range != max_range:
+        st.session_state.secret_number = random.randint(min_range, max_range)
+        st.session_state.attempts = 0
+        st.session_state.min_range = min_range
+        st.session_state.max_range = max_range
+
+    guess = st.number_input(f"Guess a number between {min_range} and {max_range}:", value=min_range)
+
+    if st.button("Submit Guess"):
+        st.session_state.attempts += 1
+        if guess == st.session_state.secret_number:
+            st.success(f"🎉 Congratulations! You guessed the number {st.session_state.secret_number} "
+                       f"in {st.session_state.attempts} attempts.")
+            del st.session_state.secret_number  # reset for a new game
+        elif guess < st.session_state.secret_number:
+            st.warning("📈 Try a higher number.")
+        else:
+            st.warning("📉 Try a lower number.")
+
+# ----------------------------
+# Machine Guessing Game
+# ----------------------------
 def machine_guessing_game():
-   st.header("Machine Guessing Game")
-   st.write("**Rules:**")
-   st.write("1. Think of a number and set a range for it.")
-   st.write("2. The computer will try to guess your number.")
-   st.write("3. Guide the computer whether to guess higher or lower.")
-   min_range = st.number_input("Enter the minimum value:", value=1)
-   max_range = st.number_input("Enter the maximum value:", value=100)
-   
-   if 'guess' not in st.session_state:
-       st.session_state.guess = (min_range + max_range) // 2
-       st.session_state.min_range = min_range
-       st.session_state.max_range = max_range
-   feedback = st.selectbox("Is the guess too high, too low, or correct?", ["Too High", "Too Low", "Correct"])
-   if feedback == "Too High":
-       st.session_state.max_range = st.session_state.guess - 1
-   elif feedback == "Too Low":
-       st.session_state.min_range = st.session_state.guess + 1
-   st.session_state.guess = (st.session_state.min_range + st.session_state.max_range) // 2
-   if feedback == "Correct":
-       st.success(f"Great! The computer guessed your number {st.session_state.guess}.")
-       st.session_state.guess = (min_range + max_range) // 2
-       st.session_state.min_range = min_range
-       st.session_state.max_range = max_range
-   else:
-       st.write(f"The computer guesses: {st.session_state.guess}")
- Streamlit App
+    st.header("🤖 Machine Guessing Game")
+    st.write("**Rules:**")
+    st.write("1. Think of a number and set a range for it.")
+    st.write("2. The computer will try to guess your number.")
+    st.write("3. Tell the computer if it should guess higher or lower.")
+
+    min_range = st.number_input("Enter the minimum value:", value=1)
+    max_range = st.number_input("Enter the maximum value:", value=100)
+
+    # Initialize game
+    if 'guess' not in st.session_state or st.session_state.min_range_m != min_range or st.session_state.max_range_m != max_range:
+        st.session_state.min_range_m = min_range
+        st.session_state.max_range_m = max_range
+        st.session_state.guess = (min_range + max_range) // 2
+
+    st.write(f"💻 Computer guesses: **{st.session_state.guess}**")
+
+    feedback = st.selectbox("Your feedback:", ["Too High", "Too Low", "Correct"])
+
+    if st.button("Submit Feedback"):
+        if feedback == "Too High":
+            st.session_state.max_range_m = st.session_state.guess - 1
+        elif feedback == "Too Low":
+            st.session_state.min_range_m = st.session_state.guess + 1
+
+        if feedback == "Correct":
+            st.success(f"🎯 The computer guessed your number: {st.session_state.guess}")
+            del st.session_state.guess  # reset for new game
+        else:
+            st.session_state.guess = (st.session_state.min_range_m + st.session_state.max_range_m) // 2
+
+# ----------------------------
+# Placeholder Portfolio Section
+# ----------------------------
+def portfolio_section():
+    st.title("📂 Portfolio Section")
+    st.write("This is a placeholder for your portfolio.")
+
+# ----------------------------
+# Main App
+# ----------------------------
 def main():
-   st.sidebar.title("Navigation")
-   choice = st.sidebar.selectbox("Choose a section:", ["Portfolio", "Guessing Game"])
-   if choice == "Portfolio":
-       portfolio_section()
-   else:
-       guessing_game_section()
+    st.sidebar.title("Navigation")
+    choice = st.sidebar.selectbox("Choose a section:", ["Portfolio", "Guessing Game"])
+
+    if choice == "Portfolio":
+        portfolio_section()
+    else:
+        guessing_game_section()
+
 if __name__ == "__main__":
-   main()
+    main()
