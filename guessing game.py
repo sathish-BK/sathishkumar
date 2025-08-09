@@ -2,11 +2,38 @@ import streamlit as st
 import random
 
 # ----------------------------
+# Custom CSS for Styling
+# ----------------------------
+st.markdown("""
+    <style>
+    /* Main app background */
+    .main {
+        background-color: #f4f8fb;
+    }
+
+    /* Title style */
+    h1, h2, h3, h4 {
+        font-family: 'Trebuchet MS', sans-serif;
+    }
+
+    /* Card style */
+    .card {
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+    .card:hover {
+        transform: scale(1.03);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# ----------------------------
 # Guessing Game Section
 # ----------------------------
 def guessing_game_section():
     st.title("🎯 Guessing Game")
-
     game_mode = st.selectbox("Choose the game mode:", ["User Guessing", "Machine Guessing"])
 
     if game_mode == "User Guessing":
@@ -14,16 +41,11 @@ def guessing_game_section():
     else:
         machine_guessing_game()
 
-# ----------------------------
-# User Guessing Game
-# ----------------------------
 def user_guessing_game():
     st.header("🧑‍💻 User Guessing Game")
-
     min_range = st.number_input("Enter the minimum value:", value=1)
     max_range = st.number_input("Enter the maximum value:", value=100)
 
-    # Store the secret number in session_state so it doesn't change
     if 'secret_number' not in st.session_state or st.session_state.min_range != min_range or st.session_state.max_range != max_range:
         st.session_state.secret_number = random.randint(min_range, max_range)
         st.session_state.attempts = 0
@@ -35,28 +57,20 @@ def user_guessing_game():
     if st.button("Submit Guess"):
         st.session_state.attempts += 1
         if guess == st.session_state.secret_number:
-            st.success(f"🎉 Congratulations! You guessed the number {st.session_state.secret_number} "
-                       f"in {st.session_state.attempts} attempts.")
-            del st.session_state.secret_number  # reset for a new game
+            st.success(f"🎉 Congratulations! You guessed the number {st.session_state.secret_number} in {st.session_state.attempts} attempts.")
+            del st.session_state.secret_number
         elif guess < st.session_state.secret_number:
             st.warning("📈 Try a higher number.")
         else:
             st.warning("📉 Try a lower number.")
 
-# ----------------------------
-# Machine Guessing Game
-# ----------------------------
 def machine_guessing_game():
     st.header("🤖 Machine Guessing Game")
-    st.write("**Rules:**")
-    st.write("1. Think of a number and set a range for it.")
-    st.write("2. The computer will try to guess your number.")
-    st.write("3. Tell the computer if it should guess higher or lower.")
+    st.write("Think of a number and guide the computer to guess it!")
 
     min_range = st.number_input("Enter the minimum value:", value=1)
     max_range = st.number_input("Enter the maximum value:", value=100)
 
-    # Initialize game
     if 'guess' not in st.session_state or st.session_state.min_range_m != min_range or st.session_state.max_range_m != max_range:
         st.session_state.min_range_m = min_range
         st.session_state.max_range_m = max_range
@@ -74,7 +88,7 @@ def machine_guessing_game():
 
         if feedback == "Correct":
             st.success(f"🎯 The computer guessed your number: {st.session_state.guess}")
-            del st.session_state.guess  # reset for new game
+            del st.session_state.guess
         else:
             st.session_state.guess = (st.session_state.min_range_m + st.session_state.max_range_m) // 2
 
@@ -82,59 +96,87 @@ def machine_guessing_game():
 # Portfolio Section
 # ----------------------------
 def portfolio_section():
+    st.markdown("""
+        <div style='background: linear-gradient(135deg, #00c6ff, #0072ff); padding: 40px; border-radius: 15px; color: white; text-align: center;'>
+            <h1>Hello, I'm <span style='color: #ffeb3b;'>Sathish Kumar</span></h1>
+            <h3>🚀 Aspiring AI & Data Science Enthusiast</h3>
+            <h4 style='color: #00ff99;'>🎯 Aim: To Become a Successful Data Scientist</h4>
+            <p>I am currently pursuing my <strong>2nd year in Artificial Intelligence and Data Science</strong> 🎓.<br>
+            Passionate about blending creativity with technology, I enjoy solving problems through AI,
+            exploring data patterns, and building innovative projects.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+       # Skills Section with Hover Effect
     st.markdown(
         """
-        <section style="background: linear-gradient(135deg, #00c6ff, #0072ff); color: white; padding: 50px 20px; font-family: 'Poppins', sans-serif; border-radius: 10px;">
-          <div style="max-width: 1000px; margin: auto; text-align: center;">
-            <h1 style="font-size: 40px; font-weight: bold; margin-bottom: 10px;">
-              Hello, I'm <span style="color: #ffeb3b;">Sathish Kumar</span>
-            </h1>
-            <h3 style="font-size: 20px; font-weight: 300; margin-bottom: 10px;">🚀 Aspiring AI & Data Science Enthusiast</h3>
-            <h3 style="color: #00ff99; font-weight: 500; margin-bottom: 30px;">🎯 My Aim: To Become a Successful Data Scientist</h3>
-            
-            <p style="font-size: 18px; line-height: 1.8; max-width: 800px; margin: auto;">
-              I am currently pursuing my <strong>2nd year in Artificial Intelligence and Data Science</strong> 🎓. 
-              Passionate about blending creativity with technology, I enjoy solving problems through AI, 
-              exploring data patterns, and building innovative projects that make an impact.
-            </p>
-            
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px;">
-              <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; width: 250px;">
-                <h4 style="color: #ffeb3b;">💡 Skills</h4>
-                <ul style="list-style: none; padding: 0; margin: 0; text-align: left;">
-                  <li>Python, C Programming</li>
-                  <li>Machine Learning Basics</li>
-                  <li>Data Visualization</li>
-                  <li>Web Development (HTML, CSS)</li>
-                </ul>
-              </div>
-              
-              <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; width: 250px;">
-                <h4 style="color: #ffeb3b;">🎯 Goals</h4>
-                <ul style="list-style: none; padding: 0; margin: 0; text-align: left;">
-                  <li>Become a Data Scientist</li>
-                  <li>Contribute to open-source AI projects</li>
-                  <li>Build AI-powered apps</li>
-                  <li>Work with top tech companies</li>
-                </ul>
-              </div>
-              
-              <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; width: 250px;">
-                <h4 style="color: #ffeb3b;">📬 Contact</h4>
-                <ul style="list-style: none; padding: 0; margin: 0; text-align: left;">
-                  <li>Email: <a href="mailto:sathishkumar@example.com" style="color: white;">sathishkumar@example.com</a></li>
-                  <li>LinkedIn: <a href="#" style="color: white;">linkedin.com/in/sathishkumar</a></li>
-                  <li>GitHub: <a href="#" style="color: white;">github.com/sathishkumar</a></li>
-                </ul>
-              </div>
+        <style>
+        .skill-card {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .skill-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        .skill-python {
+            background: linear-gradient(135deg, #ffd700, #ffae00);
+        }
+        .skill-html {
+            background: linear-gradient(135deg, #ff6a00, #ffcc70);
+        }
+        </style>
+
+        <div style='margin-top: 40px; padding: 20px; border-radius: 10px; background: #f7f9fc; text-align:center;'>
+            <h2 style='color: #0072ff;'>💡 Skills</h2>
+            <div style='display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;'>
+                <div class='skill-card skill-python'>🐍 Python</div>
+                <div class='skill-card skill-html'>🌐 HTML</div>
             </div>
-          </div>
-        </section>
+        </div>
         """,
         unsafe_allow_html=True
     )
 
-# -------------------------
+
+    st.markdown("""
+        <div class='card' style='margin-top: 30px; background: #fff5e6;'>
+            <h2 style='color: #ff6600;'>🎯 Goals</h2>
+            <ul style='font-size: 18px; line-height: 1.8;'>
+                <li>Become a Data Scientist</li>
+                <li>Contribute to open-source AI projects</li>
+                <li>Build AI-powered apps</li>
+                <li>Work with top tech companies</li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+       # Contact Section
+    st.markdown(
+        """
+        <div style='margin-top: 40px; padding: 20px; border-radius: 10px; background: #e3f2fd; text-align: center;'>
+            <h2 style='color: #0072ff;'>📬 Contact</h2>
+            <a href='mailto:sathishkumar123bk@gmail.com' target='_blank' style='text-decoration: none;'>
+                <button style='background: linear-gradient(135deg, #0072ff, #00c6ff); border: none; color: white; padding: 10px 25px; margin: 5px; border-radius: 8px; font-size: 16px; cursor: pointer;'>📧 Email</button>
+            </a>
+            <a href='https://www.linkedin.com/in/sathish-kumar-8340aa315' target='_blank' style='text-decoration: none;'>
+                <button style='background: linear-gradient(135deg, #0a66c2, #0073b1); border: none; color: white; padding: 10px 25px; margin: 5px; border-radius: 8px; font-size: 16px; cursor: pointer;'>💼 LinkedIn</button>
+            </a>
+            <a href='https://github.com/sathish-BK' target='_blank' style='text-decoration: none;'>
+                <button style='background: linear-gradient(135deg, #333, #000); border: none; color: white; padding: 10px 25px; margin: 5px; border-radius: 8px; font-size: 16px; cursor: pointer;'>💻 GitHub</button>
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# ----------------------------
 # Main App
 # ----------------------------
 def main():
